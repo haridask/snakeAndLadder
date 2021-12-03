@@ -15,7 +15,7 @@ class SnakeAndLadder:
 
     def validateConfig(self):
         for key, value in self.config.items():
-            if not 0 < value + key <= 100:
+            if not 0 < value + key <= self.board_size:
                 logging.error("InvalidConfiguration : {} steps at position {}".format(value, key))
                 logging.error("Exiting game")
                 sys.exit()
@@ -26,7 +26,7 @@ class SnakeAndLadder:
         while turns > 0:
             diceRoll = self.getDiceRoll()
             
-            if position == 100:
+            if position == self.board_size:
                 self.log("Player has won with {} turns left".format(turns))
                 sys.exit()
             else:

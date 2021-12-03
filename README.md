@@ -19,4 +19,4 @@ To run:
     from snake_and_ladder import SnakeAndLadder
 
     snakeAndLadder = SnakeAndLadder(config, dieOptions)
-    snakeAndLadder.play()
+    snakeAndLadder.play(20) # arg : number of turns to play
