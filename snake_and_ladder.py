@@ -6,10 +6,11 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='SnakeAndLadd
 
 class SnakeAndLadder:
 
-    def __init__(self, board_size: int=100, config: dict={}) -> None:
+    def __init__(self, board_size: int=100, config: dict={}, dieOptions=[1, 2, 3, 4, 5, 6]) -> None:
         self.board_size = board_size
         self.config = config
         self.validateConfig()
+        self.dieOptions = dieOptions
         self.log("Initializing snake and ladder in a board of size of {}".format(board_size))
 
     def validateConfig(self):
@@ -28,17 +29,27 @@ class SnakeAndLadder:
             if position == 100:
                 self.log("Player has won with {} turns left".format(turns))
                 sys.exit()
-            elif position + diceRoll > 100:
-                self.log("Player cannot move ahead with die roll {} from position {}".format(diceRoll, position))
             else:
-                position += diceRoll
-                self.log("Die rolled {} and player moved to position {}".format(diceRoll, position))
+                jumpPosition = position + diceRoll
+                if jumpPosition in self.config:
+                    position = self.config[jumpPosition] + jumpPosition
+                    if self.config[jumpPosition] > 0:
+                        self.log("Die rolled {} and player moved to position {}".format(diceRoll, jumpPosition))
+                        self.log("Yay a ladder! Jumping {} steps ahead to position {}".format(self.config[jumpPosition], position))
+                    else:
+                        self.log("Die rolled {} and player moved to position {}".format(diceRoll, jumpPosition))
+                        self.log("Uh-oh a snake! Jumping back {} steps to position {}".format(abs(self.config[jumpPosition]), position))
+                elif position + diceRoll > 100:
+                    self.log("Player cannot move ahead with die roll {} from position {}".format(diceRoll, position))
+                else:
+                    position = jumpPosition
+                    self.log("Die rolled {} and player moved to position {}".format(diceRoll, position))
             turns -= 1
 
         self.log("Uh-oh! Player lose :(")
 
     def getDiceRoll(self):
-        return random.randrange(1, 7)
+        return random.choice(self.dieOptions)
 
     def log(self, message: str) -> None:
         logging.info(message)
